@@ -13,6 +13,8 @@ const postsRouter = require("./routes/posts");
 const logInRouter = require("./routes/logIn");
 const profileRouter = require("./routes/profile");
 
+const path = require("path");
+
 const app = express();
 
 initializePassport(passport);
@@ -44,10 +46,20 @@ app.use("/posts", postsRouter);
 app.use("/profile", profileRouter);
 app.use("/", logInRouter);
 
+// if (process.env.NODE_ENV === "production") { //Might not need cuz Im just doing backend
+//     //server static content
+//     //npm run build
+//     app.use(express.static(path.join(__dirname, "client/build")));
+// }
+// console.log(__dirname);
 
 app.get("/", (req, res) => {
-    res.send("Hello World!");
+    res.send("Patriot Posts!");
 });
+
+app.get("*", (req, res) => {
+    res.send("That path does not exists");
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
