@@ -4,7 +4,7 @@ const userProfileController = require("../controllers/userProfileController");
 
 profileRouter.get("/", async (req, res) => {
     const user = await req.user;
-    res.send(user);
+    res.json(user);
 });
 
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
