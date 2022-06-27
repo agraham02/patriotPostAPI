@@ -7,7 +7,7 @@ logInRouter.get("/login", (req, res) => {
     res.send("Login Page");
 });
 
-logInRouter.post("/login", passport.authenticate("local", { successRedirect: "/profile" }));
+logInRouter.post("/login", passport.authenticate("local"));
 
 logInRouter.post("/register", logInController.register);
 
