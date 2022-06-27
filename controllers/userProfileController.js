@@ -3,7 +3,7 @@ const queries = require("../models/queries");
 const getProfileByUsername = async (req, res, next) => {
     const { username } = req.params;
     const results = await queries.users.getUserByUsername(username);
-    res.send(results);
+    res.json(results);
 }
 
 const deleteProfileById = async (req, res, next) => {

@@ -2,19 +2,19 @@ const queries = require("../models/queries");
 
 const getPosts = async (req, res, next) => {
     const results = await queries.posts.getPosts();
-    res.send(results);
+    res.json(results);
 }
 
 const getPostsById = async (req, res, next) => {
     const { postId } = req.params;
     const results = await queries.posts.getPostsById(postId);
-    res.send(results);
+    res.json(results);
 }
 
 const getPostByUserId = async (req, res, next) => {
     const user = await req.user;
     const results = await queries.posts.getPostByUserId(user.id);
-    res.send(results);
+    res.json(results);
 }
 
 const insertNewPost = async (req, res, next) => {
@@ -48,7 +48,7 @@ const unlikePost = async (req, res, next) => {
 const getLikesByPostId = async (req, res, next) => {
     const { postId } = req.params;
     const results = await queries.posts.likes.getLikesByPostId(postId);
-    res.send(results);
+    res.json(results);
 }
 
 const addComment = async (req, res, next) => {
@@ -76,12 +76,12 @@ const getComments = async (req, res, next) => {
         const { postId, onlyImmediate } = req.body;
         results = await queries.posts.comments.getCommentsByPostId(postId, onlyImmediate);
     }
-    res.send(results);
+    res.json(results);
 }
 
 const getTags = async (req, res, next) => {
     const results = await queries.posts.getTags();
-    res.send(results);
+    res.json(results);
 }
 
 
