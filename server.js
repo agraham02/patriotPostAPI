@@ -8,6 +8,7 @@ const initializePassport = require("./passportConfig");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const pool = require("./models/database");
+const cors = require("cors");
 
 const postsRouter = require("./routes/posts");
 const logInRouter = require("./routes/logIn");
@@ -19,6 +20,7 @@ const app = express();
 
 initializePassport(passport);
 
+app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
