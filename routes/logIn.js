@@ -8,8 +8,9 @@ logInRouter.get("/login", (req, res) => {
 });
 
 logInRouter.post("/login", passport.authenticate("local"), (req, res) => {
-  console.log("Getting profile...");
-  res.redirect("/profile");
+  const user = await req.user;
+  console.log(user);
+  res.json(user);
 });
 
 logInRouter.post("/register", logInController.register);
