@@ -7,7 +7,7 @@ const getProfileByUsername = async (req, res, next) => {
 };
 
 const getProfileDataById = async (req, res, next) => {
-  const { userId } = req.body;
+  const { userId } = req.query;
   const results = await queries.users.getUserById(userId);
   if (results) {
       const filteredResults = {

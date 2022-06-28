@@ -7,7 +7,10 @@ profileRouter.get("/", async (req, res) => {
     res.json(user);
 });
 
-profileRouter.get("/public", userProfileController.getProfileDataById);
+profileRouter.get(
+  "/publicData",
+  userProfileController.getProfileDataById
+);
 
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
 
