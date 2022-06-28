@@ -28,7 +28,7 @@ const logIn = async (req, res, next) => {
   //   console.log(dbUser);
 
   if (!dbUser) {
-    return res.send("User not found");
+    return res.json("User not found");
   }
 
   const rightPassword = await comparePasswords(
@@ -61,7 +61,7 @@ const register = async (req, res, next) => {
       hashedPassword,
       birthDate
     );
-    res.send("New user added");
+    res.json("New user added");
   } catch (error) {
     console.log(error);
   }

@@ -22,29 +22,29 @@ const insertNewPost = async (req, res, next) => {
     const { text, isPinned, isPromoted, isAdvertisement } = req.body;
     console.log(user);
     console.log(text);
-    // await queries.posts.insertNewPost(user.id, text, false, false, false);
-    res.send("Added new post");
+    await queries.posts.insertNewPost(user.id, text, false, false, false);
+    res.json("Added new post");
 }
 
 const deletePostById = async (req, res, next) => {
     const { postId } = req.params;
     console.log(postId);
     await queries.posts.deletePostById(postId);
-    res.send("removed post");
+    res.json("removed post");
 }
 
 const likePost = async (req, res, next) => {
     const user = await req.user;
     const { postId } = req.params;
     await queries.posts.likes.likePost(user.id, postId);
-    res.send("Liked post");
+    res.json("Liked post");
 }
 
 const unlikePost = async (req, res, next) => {
     const user = await req.user;
     const { postId } = req.params;
     await queries.posts.likes.unlikePost(user.id, postId);
-    res.send("Unliked post");    
+    res.json("Unliked post");    
 }
 
 const getLikesByPostId = async (req, res, next) => {
@@ -59,13 +59,13 @@ const addComment = async (req, res, next) => {
     const { parentCommentId, text } = req.body;
     
     await queries.posts.comments.insertNewComment(user.id, postId, parentCommentId ? parentCommentId : null, text);
-    res.send("Added comment");
+    res.json("Added comment");
 }
 
 const deleteCommentById = async (req, res, next) => {
     const { commentId } = req.body;
     await queries.posts.comments.deleteCommentById(commentId);
-    res.send("Deleted comment");
+    res.json("Deleted comment");
 }
 
 const getComments = async (req, res, next) => {

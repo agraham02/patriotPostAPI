@@ -4,7 +4,7 @@ const logInRouter = express.Router();
 const logInController = require("../controllers/logInController");
 
 logInRouter.get("/login", (req, res) => {
-  res.send("Login Page");
+  res.json("Login Page");
 });
 
 // logInRouter.post("/login", passport.authenticate("local"), async (req, res) => {

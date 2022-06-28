@@ -56,11 +56,11 @@ app.use("/", logInRouter);
 // console.log(__dirname);
 
 app.get("/", (req, res) => {
-    res.send("Patriot Posts!");
+    res.json("Patriot Posts!");
 });
 
 app.get("*", (req, res) => {
-    res.send("That path does not exists");
+    res.json("That path does not exists");
 })
 
 const PORT = process.env.PORT || 3001;

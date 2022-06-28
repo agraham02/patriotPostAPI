@@ -34,7 +34,7 @@ const deleteProfileById = async (req, res, next) => {
   await queries.users.deleteUserById(userId);
   // req.body.temp = { message: "Hello"};
   // console.log(req.body);
-  res.send("deleted user");
+  res.json("deleted user");
 };
 
 module.exports = {
