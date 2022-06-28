@@ -20,7 +20,9 @@ const getPostByUserId = async (req, res, next) => {
 const insertNewPost = async (req, res, next) => {
     const user = await req.user;
     const { text, isPinned, isPromoted, isAdvertisement } = req.body;
-    await queries.posts.insertNewPost(user.id, text, false, false, false);
+    console.log(user);
+    console.log(text);
+    // await queries.posts.insertNewPost(user.id, text, false, false, false);
     res.send("Added new post");
 }
 
