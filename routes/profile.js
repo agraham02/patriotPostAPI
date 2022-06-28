@@ -7,7 +7,10 @@ profileRouter.get("/", async (req, res) => {
     res.json(user);
 });
 
+profileRouter.get("/public", userProfileController.getProfileDataById);
+
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
+
 
 //need to log user out then delete user
 profileRouter.delete("/", async (req, res, next) => { 
