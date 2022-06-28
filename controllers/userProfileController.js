@@ -14,7 +14,7 @@ const getProfileDataById = async (req, res, next) => {
         bio: results.bio,
         birth_date: results.birth_date,
         email: results.email,
-        firstName: results.first_name,
+        first_name: results.first_name,
         graduation_date: null,
         // last_login: null,
         last_name: "Dummy",
