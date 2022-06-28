@@ -33,8 +33,13 @@ const sendFeedback = async (userId, feedback) => {
 
 //Posts
 const getPosts = async () => {
-    const results = await (await pool.query("SELECT * FROM user_post")).rows;
-    return results;
+  //SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile;
+  const results = await (
+    await pool.query(
+      "SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile"
+    )
+  ).rows;
+  return results;
 }
 
 const getPostsById = async (postId) => {
