@@ -7,11 +7,13 @@ logInRouter.get("/login", (req, res) => {
   res.send("Login Page");
 });
 
-logInRouter.post("/login", passport.authenticate("local"), async (req, res) => {
-  const user = await req.user;
-  console.log(user);
-  res.json(user);
-});
+// logInRouter.post("/login", passport.authenticate("local"), async (req, res) => {
+//   const user = await req.user;
+//   console.log(user);
+//   res.json(user);
+// });
+
+logInRouter.post("/login", logInController.logIn);
 
 logInRouter.post("/register", logInController.register);
 

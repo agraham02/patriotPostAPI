@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const pool = require("./models/database");
 const queries = require("./models/queries");
 const LocalStrategy = require("passport-local").Strategy;
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
 
 const comparePasswords = async (password, hash) => {
     try {
@@ -10,6 +12,12 @@ const comparePasswords = async (password, hash) => {
         throw error;
     }
 };
+
+const options = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.SECRET,
+    // algorithms: ['RS256']
+}
 
 function initializePassport(passport) {
     const authenticateUser = async (username, password, done) => {
@@ -32,7 +40,24 @@ function initializePassport(passport) {
             return done(error);
         }
     }
-    passport.use(new LocalStrategy(authenticateUser));
+    const jwtStrategy = new JwtStrategy(options, (payload, done) => {
+        console.log(" Hey: " + payload.sub);
+        try {
+            const id = payload.sub;
+            const user = queries.users.getUserById(id);
+
+            if (user) {
+                return done(null, user);
+            }
+            else {
+                return done(null, false);
+            }
+        } catch (error) {
+            return done(error);
+        }
+    });
+    // passport.use(new LocalStrategy(authenticateUser));
+    passport.use(jwtStrategy);
     passport.serializeUser((user, done) => {
         done(null, user.id);
     });
