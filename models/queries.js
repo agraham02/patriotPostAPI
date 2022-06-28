@@ -33,10 +33,10 @@ const sendFeedback = async (userId, feedback) => {
 
 //Posts
 const getPosts = async () => {
-  //SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile;
+  //SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile WHERE profile.id = post.user_id;
   const results = await (
     await pool.query(
-      "SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile"
+      "SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile WHERE profile.id = post.user_id"
     )
   ).rows;
   return results;
