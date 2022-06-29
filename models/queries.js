@@ -68,7 +68,7 @@ const getPosts = async () => {
   //GROUP BY posts.id
   const results = await (
     await pool.query(
-      "SELECT posts.*, COUNT(likes.id) AS likes_cnt, COUNT(post_comment.id) FROM user_post AS posts LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id GROUP BY posts.id"
+      "SELECT posts.*, COUNT(likes.id) AS likes_cnt, COUNT(post_comment.id) AS comments_cnt FROM user_post AS posts LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id GROUP BY posts.id"
     )
   ).rows;
   return results;
