@@ -62,13 +62,15 @@ const sendFeedback = async (userId, feedback) => {
 
 //Posts
 const getPosts = async () => {
-  //SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM user_post AS post, user_profile AS profile WHERE profile.id = post.user_id;
-  //SELECT posts.*, COUNT(likes.id) AS likes_cnt, COUNT(post_comment.id) FROM user_post AS posts LEFT JOIN post_like AS likes ON posts.id = likes.post_id
-  //LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id
-  //GROUP BY posts.id
+  //SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, COUNT(post_comment.id) AS comments_cnt
+//FROM user_post AS posts
+//LEFT JOIN user_profile AS profile ON posts.user_id = profile.id
+//LEFT JOIN post_like AS likes ON posts.id = likes.post_id
+//LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id
+//GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic ORDER BY posts.created_at DESC
   const results = await (
     await pool.query(
-      "SELECT posts.*, COUNT(likes.id) AS likes_cnt, COUNT(post_comment.id) AS comments_cnt FROM user_post AS posts LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id GROUP BY posts.id"
+      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, COUNT(post_comment.id) AS comments_cnt FROM user_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic ORDER BY posts.created_at DESC"
     )
   ).rows;
   return results;
