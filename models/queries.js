@@ -103,7 +103,7 @@ const getPosts = async () => {
 const getPostsById = async (postId) => {
   const post = await (
     await pool.query(
-      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, COUNT(text_comment.id) AS comments_cnt FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN text_comment ON posts.id = text_comment.post_id WHERE posts.id = 2 GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic ORDER BY posts.created_at DESC",
+      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, COUNT(text_comment.id) AS comments_cnt FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN text_comment ON posts.id = text_comment.post_id WHERE posts.id = $1 GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic ORDER BY posts.created_at DESC",
       [postId]
     )
   ).rows[0];
