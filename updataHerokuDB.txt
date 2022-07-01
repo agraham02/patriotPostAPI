@@ -1,0 +1,5 @@
+Instructions
+
+pg_admin -> generate backup in PLAIN format
+
+use: heroku pg:psql --app patriot-posts < patriot_posts.sql
