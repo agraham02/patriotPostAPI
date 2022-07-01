@@ -1,8 +1,13 @@
 const queries = require("../models/queries");
 
 const getPosts = async (req, res, next) => {
-    const results = await queries.posts.getPosts();
-    res.json(results);
+    try {
+        const results = await queries.posts.getPosts();
+        res.json(results);        
+    } catch (error) {
+        const e = new Error(error.message);
+        return next(e);
+    }
 }
 
 const getPostsById = async (req, res, next) => {
