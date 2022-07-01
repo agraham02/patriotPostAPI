@@ -101,10 +101,14 @@ const getPosts = async () => {
   for (const result of results) {
     console.log(result);
     const postId = result.id;
-    const likeCnt = await getPostsLikesCnt(postId);
-    const commentCnt = await getPostsCommentCnt(postId)
-    console.log(likeCnt);
-    result.like_cnt = likeCnt;
+    const likes = await getLikesByPostId(postId);
+    const commentCnt = await getPostsCommentCnt(postId);
+    const l = likes.map((like) => { 
+      console.log(like);
+      return like.user_id;
+    })
+    result.like_user_ids = l;
+    result.like_cnt = likes.length;
     result.comment_cnt = commentCnt;
   }
   console.log(results);
