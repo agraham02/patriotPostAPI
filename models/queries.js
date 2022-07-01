@@ -94,11 +94,42 @@ const insertNewPost = async (
 const getPosts = async () => {
   const results = await (
     await pool.query(
-      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, COUNT(text_comment.id) AS comments_cnt FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN text_comment ON posts.id = text_comment.post_id GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic ORDER BY posts.created_at DESC"
+      "SELECT posts.id, posts.written_text, posts.tag_1, posts.tag_2, posts.tag_3, posts.is_pinned, posts.is_advertised, posts.is_sensative, posts.is_anonymous, posts.created_at, posts.expires_in, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id ORDER BY posts.created_at DESC"
     )
   ).rows;
+
+  for (const result of results) {
+    console.log(result);
+    const postId = result.id;
+    const likeCnt = await getPostsLikesCnt(postId);
+    const commentCnt = await getPostsCommentCnt(postId)
+    console.log(likeCnt);
+    result.like_cnt = likeCnt;
+    result.comment_cnt = commentCnt;
+  }
+  console.log(results);
   return results;
 };
+
+const getPostsLikesCnt = async (postId) => {
+  const results = await (
+    await pool.query(
+      "SELECT COUNT(post_like.id) AS like_cnt FROM post_like WHERE post_id = $1",
+      [postId]
+    )
+  ).rows[0];
+  return results.like_cnt;
+}
+
+const getPostsCommentCnt = async (postId) => {
+  const results = await (
+    await pool.query(
+      "SELECT COUNT(text_comment.id) AS comment_cnt FROM text_comment WHERE post_id = $1",
+      [postId]
+    )
+  ).rows[0];
+  return results.comment_cnt;
+}
 
 const getPostsById = async (postId) => {
   const post = await (
@@ -214,12 +245,14 @@ module.exports = {
       unlikePost,
       getLikesByPostId,
       getLikesByUserId,
+      getPostsLikesCnt,
     },
     comments: {
       insertNewComment,
       deleteCommentById,
       getCommentsByPostId,
       getCommentsByCommentId,
+      getPostsCommentCnt
     },
   },
   logIn: {},
