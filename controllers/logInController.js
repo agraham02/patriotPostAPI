@@ -33,7 +33,7 @@ const logIn = async (req, res, next) => {
 
   const rightPassword = await comparePasswords(
     password,
-    dbUser.password_hashed
+    dbUser.password
   );
   if (rightPassword) {
     const accessToken = issueJWT(dbUser);
@@ -51,19 +51,23 @@ const register = async (req, res, next) => {
     //check if user with given username already exists
     const existingUser = await queries.users.getUserByUsername(username);
     if (existingUser) {
-      throw new Error("User with that username already exists");
+      res.status(404);
+      return next(new Error("User with that username already exists"));
     }
     const hashedPassword = await passwordHash(password, 10);
     await queries.users.insertNewUser(
       firstName,
       lastName,
       username,
+      email,
       hashedPassword,
       birthDate
     );
     res.json("New user added");
   } catch (error) {
-    console.log(error);
+    res.status(500);
+    const e = new Error(`Something happened with our servers.`);
+    next(e);
   }
 };
 

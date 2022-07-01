@@ -70,8 +70,9 @@ app.get("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(`${err}`);
-    res.status(500).json({error: "Something failed on our servers"});
+    const errorMessage = err.message
+    console.error(`${errorMessage}`);
+    res.json({ error: errorMessage });
 })
 
 const PORT = process.env.PORT || 3001;

@@ -9,24 +9,25 @@ const getProfileByUsername = async (req, res, next) => {
 const getProfileDataById = async (req, res, next) => {
   const { userId } = req.query;
   const results = await queries.users.getUserById(userId);
-  if (results) {
-      const filteredResults = {
-        bio: results.bio,
-        birth_date: results.birth_date,
-        email: results.email,
-        first_name: results.first_name,
-        graduation_date: null,
-        // last_login: null,
-        last_name: "Dummy",
-        major_id: null,
-        minor_id: null,
-        profile_pic: null,
-        registered_at: "2022-06-24T22:11:59.883Z",
-        social_medias: null,
-        username: "TD01",
-      };
-      res.json(filteredResults);
-  }
+  res.json(results);
+  // if (results) {
+  //     const filteredResults = {
+  //       bio: results.bio,
+  //       birth_date: results.birth_date,
+  //       email: results.email,
+  //       first_name: results.first_name,
+  //       graduation_date: null,
+  //       // last_login: null,
+  //       last_name: "Dummy",
+  //       major_id: null,
+  //       minor_id: null,
+  //       profile_pic: null,
+  //       registered_at: "2022-06-24T22:11:59.883Z",
+  //       social_medias: null,
+  //       username: "TD01",
+  //     };
+  //     res.json(filteredResults);
+  // }
 };
 
 const deleteProfileById = async (req, res, next) => {

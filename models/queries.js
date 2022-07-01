@@ -1,6 +1,38 @@
 const pool = require("./database");
 
+
+
+const selectStatement = () => {
+  
+}
+
+const insertStatement = () => {
+
+}
+
+const updateStatement = () => {
+
+}
+
+const deleteStatement = () => {
+
+}
+
 //Users
+const insertNewUser = async (
+  firstName,
+  lastName,
+  username,
+  email,
+  hashedPassword,
+  birthDate
+) => {
+  await pool.query(
+    "INSERT INTO user_profile (first_name, last_name, username, email, password, birth_date) VALUES ($1, $2, $3, $4, $5, $6)",
+    [firstName, lastName, username, email, hashedPassword, birthDate]
+  );
+};
+
 const getUserByUsername = async (username) => {
   const result = await (
     await pool.query("SELECT * FROM user_profile WHERE username = $1", [
@@ -15,19 +47,6 @@ const getUserById = async (id) => {
     await pool.query("SELECT * FROM user_profile WHERE id = $1", [id])
   ).rows[0];
   return result;
-};
-
-const insertNewUser = async (
-  firstName,
-  lastName,
-  username,
-  hashedPassword,
-  birthDate
-) => {
-  await pool.query(
-    "INSERT INTO user_profile (first_name, last_name, username, password_hashed, birth_date) VALUES ($1, $2, $3, $4, $5)",
-    [firstName, lastName, username, hashedPassword, birthDate]
-  );
 };
 
 const updateUserById = async (
@@ -53,18 +72,29 @@ const deleteUserById = async (userId) => {
   await pool.query("DELETE FROM user_profile WHERE id = $1", [userId]);
 };
 
-const sendFeedback = async (userId, feedback) => {
-  await pool.query("INSERT INTO feedback (user_id, feedback) VALUES ($1, $2)", [
-    userId,
-    feedback,
-  ]);
+//Posts
+const insertNewPost = async (
+  userId,
+  text,
+  tag1,
+  tag2,
+  tag3,
+  isPinned,
+  isAdvertised,
+  isSensative,
+  isAnonymous,
+  expiresIn
+) => {
+  await pool.query(
+    "INSERT INTO text_post (user_id, written_text, tag_1, tag_2, tag_3, is_pinned, is_advertised, is_sensative, is_anonymous, expires_in) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+    [userId, text, tag1, tag2, tag3, isPinned, isAdvertised, isSensative, isAnonymous, expiresIn]
+  );
 };
 
-//Posts
 const getPosts = async () => {
   const results = await (
     await pool.query(
-      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, likes.user_id AS like_user_id, COUNT(post_comment.id) AS comments_cnt FROM user_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN post_comment ON posts.id = post_comment.parent_post_id GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic, likes.user_id ORDER BY posts.created_at DESC"
+      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, COUNT(text_comment.id) AS comments_cnt FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN text_comment ON posts.id = text_comment.post_id GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic, likes.user_id ORDER BY posts.created_at DESC"
     )
   ).rows;
   return results;
@@ -72,34 +102,24 @@ const getPosts = async () => {
 
 const getPostsById = async (postId) => {
   const post = await (
-    await pool.query("SELECT post.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, likes.user_id AS like_user_id, COUNT(post_comment.id) AS comments_cnt FROM user_post AS post LEFT JOIN user_profile AS profile ON post.user_id = profile.id LEFT JOIN post_like AS likes ON post.id = likes.post_id LEFT JOIN post_comment ON post.id = post_comment.parent_post_id WHERE post.id = $1 GROUP BY post.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic, likes.user_id ORDER BY post.created_at DESC", [postId])
+    await pool.query(
+      "SELECT posts.*, profile.first_name, profile.last_name, profile.username, profile.profile_pic, COUNT(likes.id) AS likes_cnt, likes.user_id AS like_user_id, COUNT(text_comment.id) AS comments_cnt FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id LEFT JOIN post_like AS likes ON posts.id = likes.post_id LEFT JOIN text_comment ON posts.id = text_comment.post_id WHERE posts.id = $1 GROUP BY posts.id, profile.first_name, profile.last_name, profile.username, profile.profile_pic, likes.user_id ORDER BY posts.created_at DESC",
+      [postId]
+    )
   ).rows[0];
   const comments = await getCommentsByPostId(postId, true);
-  return { post, comments};
+  return { post, comments };
 };
 
 const getPostByUserId = async (userId) => {
   const results = await (
-    await pool.query("SELECT * FROM user_post WHERE user_id = $1", [userId])
+    await pool.query("SELECT * FROM text_post WHERE user_id = $1", [userId])
   ).rows;
   return results;
 };
 
-const insertNewPost = async (
-  userId,
-  text,
-  isPinned,
-  isPromoted,
-  isAdvertisement
-) => {
-  await pool.query(
-    "INSERT INTO user_post (user_id, content, is_pinned, is_promoted, is_advertisement) VALUES ($1, $2, $3, $4, $5)",
-    [userId, text, isPinned, isPromoted, isAdvertisement]
-  );
-};
-
 const deletePostById = async (postId) => {
-  await pool.query("DELETE FROM user_post WHERE id = $1", [postId]);
+  await pool.query("DELETE FROM text_post WHERE id = $1", [postId]);
 };
 
 //Likes
@@ -108,13 +128,6 @@ const likePost = async (userId, postId) => {
     userId,
     postId,
   ]);
-};
-
-const unlikePost = async (userId, postId) => {
-  await pool.query(
-    "DELETE FROM post_like WHERE user_id = $1 AND post_id = $2",
-    [userId, postId]
-  );
 };
 
 const getLikesByPostId = async (postId) => {
@@ -131,39 +144,42 @@ const getLikesByUserId = async (userId) => {
   return results;
 };
 
+const unlikePost = async (userId, postId) => {
+  await pool.query(
+    "DELETE FROM post_like WHERE user_id = $1 AND post_id = $2",
+    [userId, postId]
+  );
+};
+
 //Comments
 const insertNewComment = async (
   userId,
-  parentPostId,
-  parentCommentId,
-  text
+  postId,
+  text,
+  isPinned,
+  isSensative,
+  isAnonymous
 ) => {
   await pool.query(
-    "INSERT INTO post_comment (user_id, parent_post_id, parent_comment_id, comment_text) VALUES ($1, $2, $3, $4)",
-    [userId, parentPostId, parentCommentId, text]
+    "INSERT INTO text_comment (user_id, post_id, written_text, is_pinned, is_sensative, is_anonymous) VALUES ($1, $2, $3, $4, $5, $6)",
+    [userId, postId, text, isPinned, isSensative, isAnonymous]
   );
 };
 
 const deleteCommentById = async (commentId) => {
-  await pool.query("DELETE FROM post_comment WHERE id = $1", [commentId]);
+  await pool.query("DELETE FROM text_comment WHERE id = $1", [commentId]);
 };
 
-const getCommentsByPostId = async (postId, onlyImmediateChild) => {
+const getCommentsByPostId = async (postId) => {
   let query;
-  if (onlyImmediateChild) {
-    query =
-      "SELECT * FROM post_comment WHERE parent_post_id = $1 AND parent_comment_id IS NULL";
-  } else {
-    query = "SELECT * FROM post_comment WHERE parent_post_id = $1";
-  }
-  const results = await (await pool.query(query, [postId])).rows;
+  const results = await (await pool.query("SELECT * FROM text_comment WHERE post_id = $1", [postId])).rows;
   return results;
 };
 
 const getCommentsByCommentId = async (commentId) => {
   const results = await (
     await pool.query(
-      "SELECT * FROM post_comment WHERE parent_comment_id = $1",
+      "SELECT * FROM text_comment WHERE parent_comment_id = $1",
       [commentId]
     )
   ).rows;
@@ -185,7 +201,6 @@ module.exports = {
     updateUserById,
     deleteUserById,
     updateUserSettingsByUserId,
-    sendFeedback,
   },
   posts: {
     getPosts,

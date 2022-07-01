@@ -7,13 +7,12 @@ postsRouter.use(passport.authenticate("jwt", { session: false }));
 
 postsRouter.get("/", postController.getPosts);
 
-postsRouter.get("/comments", postController.getComments);
 
-postsRouter.get("/:postId", postController.getPostsById);
+postsRouter.get("/tags", postController.getTags);
 
 postsRouter.post("/", postController.insertNewPost);
 
-postsRouter.delete("/comments", postController.deleteCommentById);
+postsRouter.get("/:postId", postController.getPostsById);
 
 postsRouter.delete("/:postId", postController.deletePostById);
 
@@ -23,10 +22,12 @@ postsRouter.post("/:postId/unlike", postController.unlikePost);
 
 postsRouter.get("/:postId/likes", postController.getLikesByPostId);
 
-postsRouter.post("/:postId/comments/addComment", postController.addComment);
+postsRouter.get("/:postId/comments", postController.getCommentsByPostId);
 
+postsRouter.post("/:postId/comment", postController.addComment);
 
-postsRouter.get("/tags", postController.getTags);
+postsRouter.delete("/comment/:commentId", postController.deleteCommentById);
+
 
 module.exports = postsRouter;
 
