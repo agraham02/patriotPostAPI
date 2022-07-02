@@ -107,6 +107,25 @@ const getCommentsByPostId = async (req, res, next) => {
   res.json(results);
 };
 
+const getCommentByCommentId = async (req, res, next) => {
+  const { commentId } = req.params;
+  const isParentCommentId = req.query.isParentCommentId;
+  let results;
+  if (isParentCommentId) {
+    console.log("Here");
+    results = await queries.posts.comments.getCommentsByParentCommentId(
+      commentId
+    );
+  } else {
+    console.log("THere");
+    results = await queries.posts.comments.getCommentByCommentId(commentId);
+  }
+  res.json(results);
+
+}
+
+
+
 const getTags = async (req, res, next) => {
   const results = await queries.posts.getTags();
   res.json(results);
@@ -124,6 +143,7 @@ module.exports = {
   addComment,
   deleteCommentById,
   getCommentsByPostId,
+  getCommentByCommentId,
   getTags,
 };
 

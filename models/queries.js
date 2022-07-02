@@ -207,14 +207,29 @@ const deleteCommentById = async (commentId) => {
 
 const getCommentsByPostId = async (postId) => {
   let query;
-  const results = await (await pool.query("SELECT * FROM text_comment WHERE post_id = $1", [postId])).rows;
+  const results = await (
+    await pool.query(
+      "SELECT text_comment.id, text_comment.post_id, text_comment.parent_post_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE post_id = $1 ORDER BY text_comment.created_at DESC",
+      [postId]
+    )
+  ).rows;
   return results;
 };
 
-const getCommentsByCommentId = async (commentId) => {
+const getCommentByCommentId = async (commentId) => {
+  const result = await (
+    await pool.query(
+      "SELECT text_comment.id, text_comment.post_id, text_comment.parent_post_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE text_comment.id = $1 ORDER BY text_comment.created_at DESC",
+      [commentId]
+    )
+  ).rows[0];
+  return result;
+};
+
+const getCommentsByParentCommentId = async (commentId) => {
   const results = await (
     await pool.query(
-      "SELECT * FROM text_comment WHERE parent_comment_id = $1",
+      "SELECT text_comment.id, text_comment.post_id, text_comment.parent_post_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE text_comment.parent_post_id = $1 ORDER BY text_comment.created_at DESC",
       [commentId]
     )
   ).rows;
@@ -255,8 +270,9 @@ module.exports = {
       insertNewComment,
       deleteCommentById,
       getCommentsByPostId,
-      getCommentsByCommentId,
-      getPostsCommentCnt
+      getCommentByCommentId,
+      getCommentsByParentCommentId,
+      getPostsCommentCnt,
     },
   },
   logIn: {},

@@ -24,10 +24,11 @@ postsRouter.get("/:postId/likes", postController.getLikesByPostId);
 
 postsRouter.get("/:postId/comments", postController.getCommentsByPostId);
 
+postsRouter.get("/comments/:commentId", postController.getCommentByCommentId);
+
 postsRouter.post("/:postId/comment", postController.addComment);
 
 postsRouter.delete("/comment/:commentId", postController.deleteCommentById);
-
 
 module.exports = postsRouter;
 
