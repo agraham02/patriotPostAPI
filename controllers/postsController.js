@@ -82,7 +82,7 @@ const getLikesByPostId = async (req, res, next) => {
 const addComment = async (req, res, next) => {
   const user = await req.user;
   const { postId } = req.params;
-  const { text, isPinned, isSensative, isAnonymous } = req.body;
+  const { text, isPinned, isSensative, isAnonymous, parentCommentId } = req.body;
 
   await queries.posts.comments.insertNewComment(
     user.id,
@@ -90,7 +90,8 @@ const addComment = async (req, res, next) => {
     text,
     isPinned,
     isSensative,
-    isAnonymous
+    isAnonymous,
+    parentCommentId
   );
   res.json({ message: "Your comment was successfully posted" });
 };
@@ -109,16 +110,16 @@ const getCommentsByPostId = async (req, res, next) => {
 
 const getCommentByCommentId = async (req, res, next) => {
   const { commentId } = req.params;
-  const isParentCommentId = req.query.isParentCommentId;
+  const getChildComments = req.query.getChildComments;
   let results;
-  if (isParentCommentId) {
-    console.log("Here");
-    results = await queries.posts.comments.getCommentsByParentCommentId(
-      commentId
-    );
+  if (getChildComments) {
+      console.log("Here");
+      results = await queries.posts.comments.getCommentsByParentCommentId(
+          commentId
+      );
   } else {
-    console.log("THere");
-    results = await queries.posts.comments.getCommentByCommentId(commentId);
+      console.log("THere");
+      results = await queries.posts.comments.getCommentByCommentId(commentId);
   }
   res.json(results);
 
