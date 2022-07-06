@@ -5,7 +5,7 @@ const userProfileController = require("../controllers/userProfileController");
 const { authenticateToken } = require("../utils");
 const postController = require("../controllers/postsController"); 
 
-profileRouter.use("/", passport.authenticate("jwt", {session: false}));
+profileRouter.use(passport.authenticate("jwt", { session: false }));
 
 profileRouter.get(
   "/",
@@ -20,9 +20,10 @@ profileRouter.get(
   userProfileController.getProfileDataById
 );
 
+profileRouter.get("/myLikes", userProfileController.getLikesByUserId);
+
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
 
-profileRouter.get("/myLikes", userProfileController.getLikesByUserId);
 
 //need to log user out then delete user
 profileRouter.delete("/", userProfileController.deleteProfileById);

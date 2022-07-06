@@ -171,6 +171,7 @@ const getLikesByUserId = async (userId) => {
   const results = await (
     await pool.query("SELECT * FROM post_like WHERE user_id = $1", [userId])
   ).rows;
+  console.log(results);
   return results;
 };
 
