@@ -3,6 +3,7 @@ const passport = require("passport");
 const profileRouter = express.Router();
 const userProfileController = require("../controllers/userProfileController");
 const { authenticateToken } = require("../utils");
+const postController = require("../controllers/postsController"); 
 
 profileRouter.use("/", passport.authenticate("jwt", {session: false}));
 
@@ -21,6 +22,7 @@ profileRouter.get(
 
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
 
+profileRouter.get("/myLikes", postController.getLikesByUserId);
 
 //need to log user out then delete user
 profileRouter.delete("/", userProfileController.deleteProfileById);
