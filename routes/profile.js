@@ -22,7 +22,7 @@ profileRouter.get(
 
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
 
-profileRouter.get("/myLikes", postController.getLikesByUserId);
+profileRouter.get("/myLikes", userProfileController.getLikesByUserId);
 
 //need to log user out then delete user
 profileRouter.delete("/", userProfileController.deleteProfileById);

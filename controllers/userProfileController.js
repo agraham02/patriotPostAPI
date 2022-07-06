@@ -38,8 +38,15 @@ const deleteProfileById = async (req, res, next) => {
   res.json("deleted user");
 };
 
+const getLikesByUserId = async (req, res, next) => {
+    const user = await req.user;
+    const results = await queries.posts.likes.getLikesByUserId(user.id);
+    res.json(results);
+};
+
 module.exports = {
   getProfileByUsername,
   getProfileDataById,
   deleteProfileById,
+  getLikesByUserId
 };

@@ -79,11 +79,7 @@ const getLikesByPostId = async (req, res, next) => {
   res.json(results);
 };
 
-const getLikesByUserId = async (req, res, next) => {
-  const user = await req.user;
-  const results = await queries.posts.likes.getLikesByUserId(user.id);
-  res.json(results);
-}
+
 
 const addComment = async (req, res, next) => {
   const user = await req.user;
@@ -147,7 +143,6 @@ module.exports = {
   likePost,
   unlikePost,
   getLikesByPostId,
-  getLikesByUserId,
   addComment,
   deleteCommentById,
   getCommentsByPostId,
