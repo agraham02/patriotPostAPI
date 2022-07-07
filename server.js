@@ -62,7 +62,6 @@ app.get("/", (req, res) => {
 app.get("/error", (req, res, next) => {
     // const e = new Error(`Server Error: Test`);
     // e.status = 500;
-    throw new Error("TEST");
 });
 
 app.get("*", (req, res) => {
@@ -71,7 +70,7 @@ app.get("*", (req, res) => {
 
 app.use((err, req, res, next) => {
     const errorMessage = err.message
-    console.error(`${errorMessage}`);
+    console.error(`${err}`);
     res.json({ error: errorMessage });
 })
 

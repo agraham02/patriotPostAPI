@@ -134,6 +134,7 @@ const likeComment = async (req, res, next) => {
     await queries.posts.comments.likeComment(user.id, commentId);
     res.json("liked comment");    
   } catch (error) {
+    res.status(500);
     next(error); //improve error handeling
   }
 }

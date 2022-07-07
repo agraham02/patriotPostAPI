@@ -277,6 +277,14 @@ const unlikeComment = async (userId, commentId) => {
     );
 };
 
+const getCommentLikesByUserId = async (userId) => {
+  const results = await (
+        await pool.query("SELECT * FROM comment_like WHERE user_id = $1", [userId])
+    ).rows;
+    console.log(results);
+    return results;
+}
+
 const getTags = async () => {
     const results = await (
         await pool.query("SELECT * FROM post_tag ORDER BY name ASC")
@@ -316,7 +324,8 @@ module.exports = {
             getPostsCommentCnt,
             getCommentLikeCnt,
             likeComment,
-            unlikeComment
+            unlikeComment,
+            getCommentLikesByUserId
         },
     },
     logIn: {},

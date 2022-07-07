@@ -44,9 +44,23 @@ const getLikesByUserId = async (req, res, next) => {
     res.json(results);
 };
 
+const getCommentLikesByUserId = async (req, res, next) => {
+  const user = await req.user;
+  let results = await queries.posts.comments.getCommentLikesByUserId(user.id);
+  const {onlyUnderPost, commentId} = req.query;
+  
+  if (onlyUnderPost) {
+    results = results.filter((commentLike) => {
+      return commentLike.comment_id === Number.parseInt(commentId);
+    });
+  }
+  res.json(results);
+}
+
 module.exports = {
   getProfileByUsername,
   getProfileDataById,
   deleteProfileById,
-  getLikesByUserId
+  getLikesByUserId,
+  getCommentLikesByUserId
 };
