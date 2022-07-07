@@ -28,17 +28,10 @@ postsRouter.get("/comments/:commentId", postController.getCommentByCommentId);
 
 postsRouter.post("/:postId/comment", postController.addComment);
 
-postsRouter.delete("/comment/:commentId", postController.deleteCommentById);
+postsRouter.delete("/comments/:commentId", postController.deleteCommentById);
+
+postsRouter.post("/comments/:commentId/like", postController.likeComment);
+
+postsRouter.delete("/comments/:commentId/unlike", postController.unlikeComment);
 
 module.exports = postsRouter;
-
-/*-getPosts,
-        -getPostsById,
-        getPostByUserId,
-        -insertNewPost,
-        -deletePostById,
-        -getTags,
-        likePost,
-        unlikePost,
-        getLikesByPostId,
-        getLikesByUserId */

@@ -127,7 +127,23 @@ const getCommentByCommentId = async (req, res, next) => {
 
 }
 
+const likeComment = async (req, res, next) => {
+  try {
+    const user = await req.user;
+    const {commentId} = req.params;
+    await queries.posts.comments.likeComment(user.id, commentId);
+    res.json("liked comment");    
+  } catch (error) {
+    next(error); //improve error handeling
+  }
+}
 
+const unlikeComment = async (req, res, next) => {
+    const user = await req.user;
+    const { commentId } = req.params;
+    await queries.posts.comments.unlikeComment(user.id, commentId);
+    res.json("unlike comment");
+};
 
 const getTags = async (req, res, next) => {
   const results = await queries.posts.getTags();
@@ -148,6 +164,8 @@ module.exports = {
   getCommentsByPostId,
   getCommentByCommentId,
   getTags,
+  likeComment,
+  unlikeComment
 };
 
 /*-getPosts,
