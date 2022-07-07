@@ -210,6 +210,17 @@ const getCommentsByPostId = async (postId) => {
       [postId]
     )
   ).rows;
+  // console.log(results);
+  for (const result of results) {
+      console.log(result);
+      const commentId = result.id;
+      const likeCnt = await getCommentLikeCnt(commentId);
+      // const commentCnt = await getPostsCommentCnt(postId);
+      result.like_cnt = likeCnt;
+      // result.comment_cnt = commentCnt;
+  }
+  console.log(results);
+
   return results;
 };
 
@@ -232,6 +243,11 @@ const getCommentsByParentCommentId = async (commentId) => {
   ).rows;
   return results;
 };
+
+const getCommentLikeCnt = async (commentId) => {
+  const result = (await pool.query("SELECT COUNT(id) AS like_cnt FROM comment_like WHERE comment_id = $1", [commentId])).rows[0];
+  return result.like_cnt
+}
 
 const getTags = async () => {
   const results = await (
@@ -270,6 +286,7 @@ module.exports = {
       getCommentByCommentId,
       getCommentsByParentCommentId,
       getPostsCommentCnt,
+      getCommentLikeCnt
     },
   },
   logIn: {},
