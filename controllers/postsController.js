@@ -5,125 +5,180 @@ const getPosts = async (req, res, next) => {
     const results = await queries.posts.getPosts();
     res.json(results);
   } catch (error) {
-    const e = new Error(error.message);
-    return next(e);
+    res.status(500);
+    return next(error);
   }
 };
 
 const getPostsById = async (req, res, next) => {
-  const { postId } = req.params;
-  const results = await queries.posts.getPostsById(postId);
-  res.json(results);
+  try {
+    const { postId } = req.params;
+    const results = await queries.posts.getPostsById(postId);
+    res.json(results);    
+  } catch (error) {
+    res.status(500);
+    return next(error);
+  }
 };
 
 const getPostByUserId = async (req, res, next) => {
-  const user = await req.user;
-  const results = await queries.posts.getPostByUserId(user.id);
-  res.json(results);
+  try {
+    const user = await req.user;
+    const results = await queries.posts.getPostByUserId(user.id);
+    res.json(results);
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const insertNewPost = async (req, res, next) => {
-  const user = await req.user;
-  const {
-    text,
-    tag1,
-    tag2,
-    tag3,
-    isPinned,
-    isAdvertised,
-    isSensative,
-    isAnonymous,
-    expiresIn,
-  } = req.body;
-  //   console.log(user);
-  //   console.log(text);
-  await queries.posts.insertNewPost(
-    user.id,
-    text,
-    tag1,
-    tag2,
-    tag3,
-    isPinned,
-    isAdvertised,
-    isSensative,
-    isAnonymous,
-    expiresIn
-  );
-  res.json({ message: "Your post was successfully posted" });
+  try {
+    const user = await req.user;
+    const {
+      text,
+      tag1,
+      tag2,
+      tag3,
+      isPinned,
+      isAdvertised,
+      isSensative,
+      isAnonymous,
+      expiresIn,
+    } = req.body;
+    //   console.log(user);
+    //   console.log(text);
+    await queries.posts.insertNewPost(
+      user.id,
+      text,
+      tag1,
+      tag2,
+      tag3,
+      isPinned,
+      isAdvertised,
+      isSensative,
+      isAnonymous,
+      expiresIn
+    );
+    res.json({ message: "Your post was successfully posted" });
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const deletePostById = async (req, res, next) => {
-  const { postId } = req.params;
-  console.log(postId);
-  await queries.posts.deletePostById(postId);
-  res.json({ message: "Your post was successfully deleted" });
+  try {
+    const { postId } = req.params;
+    console.log(postId);
+    await queries.posts.deletePostById(postId);
+    res.json({ message: "Your post was successfully deleted" });
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const likePost = async (req, res, next) => {
-  const user = await req.user;
-  const { postId } = req.params;
-  await queries.posts.likes.likePost(user.id, postId);
-  res.json("Liked post");
+  try {
+    const user = await req.user;
+    const { postId } = req.params;
+    await queries.posts.likes.likePost(user.id, postId);
+    res.json("Liked post");
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const unlikePost = async (req, res, next) => {
-  const user = await req.user;
-  const { postId } = req.params;
-  await queries.posts.likes.unlikePost(user.id, postId);
-  res.json("Unliked post");
+  try {
+    const user = await req.user;
+    const { postId } = req.params;
+    await queries.posts.likes.unlikePost(user.id, postId);
+    res.json("Unliked post");
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const getLikesByPostId = async (req, res, next) => {
-  const { postId } = req.params;
-  const results = await queries.posts.likes.getLikesByPostId(postId);
-  res.json(results);
+  try {
+    const { postId } = req.params;
+    const results = await queries.posts.likes.getLikesByPostId(postId);
+    res.json(results);
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 
 
 const addComment = async (req, res, next) => {
-  const user = await req.user;
-  const { postId } = req.params;
-  const { text, isPinned, isSensative, isAnonymous, parentCommentId } = req.body;
-
-  await queries.posts.comments.insertNewComment(
-    user.id,
-    postId,
-    text,
-    isPinned,
-    isSensative,
-    isAnonymous,
-    parentCommentId
-  );
-  res.json({ message: "Your comment was successfully posted" });
+  try {
+    const user = await req.user;
+    const { postId } = req.params;
+    const { text, isPinned, isSensative, isAnonymous, parentCommentId } = req.body;
+  
+    await queries.posts.comments.insertNewComment(
+      user.id,
+      postId,
+      text,
+      isPinned,
+      isSensative,
+      isAnonymous,
+      parentCommentId
+    );
+    res.json({ message: "Your comment was successfully posted" });
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const deleteCommentById = async (req, res, next) => {
-  const { commentId } = req.params;
-  await queries.posts.comments.deleteCommentById(commentId);
-  res.json({ message: "Your comment was successfully deleted" });
+  try {
+    const { commentId } = req.params;
+    await queries.posts.comments.deleteCommentById(commentId);
+    res.json({ message: "Your comment was successfully deleted" });
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const getCommentsByPostId = async (req, res, next) => {
-  const { postId } = req.params;
-  const results = await queries.posts.comments.getCommentsByPostId(postId);
-  res.json(results);
+  try {
+    const { postId } = req.params;
+    const results = await queries.posts.comments.getCommentsByPostId(postId);
+    res.json(results);
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 const getCommentByCommentId = async (req, res, next) => {
-  const { commentId } = req.params;
-  const getChildComments = req.query.getChildComments;
-  let results;
-  if (getChildComments) {
-      console.log("Here");
-      results = await queries.posts.comments.getCommentsByParentCommentId(
-          commentId
-      );
-  } else {
-      console.log("THere");
-      results = await queries.posts.comments.getCommentByCommentId(commentId);
+  try {
+    const { commentId } = req.params;
+    const getChildComments = req.query.getChildComments;
+    let results;
+    if (getChildComments) {
+        console.log("Here");
+        results = await queries.posts.comments.getCommentsByParentCommentId(
+            commentId
+        );
+    } else {
+        console.log("THere");
+        results = await queries.posts.comments.getCommentByCommentId(commentId);
+    }
+    res.json(results);
+  } catch (error) {
+      res.status(500);
+      return next(error);
   }
-  res.json(results);
 
 }
 
@@ -135,20 +190,45 @@ const likeComment = async (req, res, next) => {
     res.json("liked comment");    
   } catch (error) {
     res.status(500);
-    next(error); //improve error handeling
+    next(error);
   }
 }
 
 const unlikeComment = async (req, res, next) => {
+  try {
     const user = await req.user;
     const { commentId } = req.params;
     await queries.posts.comments.unlikeComment(user.id, commentId);
     res.json("unlike comment");
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
+const refreshPostLikesAndCommentsCnt = async (req, res, next) => {
+  try {
+    const postId = req.params;
+    const likeCnt = await queries.posts.likes.getPostsLikesCnt(postId);
+    const commentCnt = await queries.posts.comments.getPostsCommentCnt(postId);
+    res.json({
+        like_cnt: likeCnt,
+        comment_cnt: commentCnt,
+    });
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
+}
+
 const getTags = async (req, res, next) => {
-  const results = await queries.posts.getTags();
-  res.json(results);
+  try {
+    const results = await queries.posts.getTags();
+    res.json(results);
+  } catch (error) {
+      res.status(500);
+      return next(error);
+  }
 };
 
 module.exports = {
@@ -166,7 +246,8 @@ module.exports = {
   getCommentByCommentId,
   getTags,
   likeComment,
-  unlikeComment
+  unlikeComment,
+  refreshPostLikesAndCommentsCnt
 };
 
 /*-getPosts,

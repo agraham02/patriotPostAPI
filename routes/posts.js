@@ -24,9 +24,11 @@ postsRouter.get("/:postId/likes", postController.getLikesByPostId);
 
 postsRouter.get("/:postId/comments", postController.getCommentsByPostId);
 
-postsRouter.get("/comments/:commentId", postController.getCommentByCommentId);
+postsRouter.get("/:postId/refresh", postController.refreshPostLikesAndCommentsCnt);
 
 postsRouter.post("/:postId/comment", postController.addComment);
+
+postsRouter.get("/comments/:commentId", postController.getCommentByCommentId);
 
 postsRouter.delete("/comments/:commentId", postController.deleteCommentById);
 

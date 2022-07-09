@@ -212,10 +212,9 @@ const deleteCommentById = async (commentId) => {
 };
 
 const getCommentsByPostId = async (postId) => {
-    let query;
     const results = await (
         await pool.query(
-            "SELECT text_comment.id, text_comment.post_id, text_comment.parent_comment_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE post_id = $1 ORDER BY text_comment.created_at DESC",
+            "SELECT text_comment.id, text_comment.post_id, text_comment.parent_comment_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE text_comment.post_id = $1 AND text_comment.parent_comment_id IS NULL ORDER BY text_comment.created_at DESC",
             [postId]
         )
     ).rows;
@@ -224,9 +223,9 @@ const getCommentsByPostId = async (postId) => {
         console.log(result);
         const commentId = result.id;
         const likeCnt = await getCommentLikeCnt(commentId);
-        // const commentCnt = await getPostsCommentCnt(postId);
+        const commentCnt = await getCommentCommentCnt(commentId);
         result.like_cnt = likeCnt;
-        // result.comment_cnt = commentCnt;
+        result.comment_cnt = commentCnt;
     }
     console.log(results);
 
@@ -250,6 +249,16 @@ const getCommentsByParentCommentId = async (commentId) => {
             [commentId]
         )
     ).rows;
+    for (const result of results) {
+        console.log(result);
+        const commentId = result.id;
+        const likeCnt = await getCommentLikeCnt(commentId);
+        const commentCnt = await getCommentCommentCnt(commentId);
+        result.like_cnt = likeCnt;
+        result.comment_cnt = commentCnt;
+    }
+    console.log(results);
+
     return results;
 };
 
@@ -262,6 +271,16 @@ const getCommentLikeCnt = async (commentId) => {
     ).rows[0];
     return result.like_cnt;
 };
+
+const getCommentCommentCnt = async (commentId) => {
+    const result = await (
+        await pool.query(
+            "SELECT COUNT(id) AS comment_cnt FROM text_comment WHERE parent_comment_id = $1",
+            [commentId]
+        )
+    ).rows[0];
+    return result.comment_cnt;
+}
 
 const likeComment = async (userId, commentId) => {
     await pool.query(
