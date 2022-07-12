@@ -223,7 +223,7 @@ const deleteCommentById = async (commentId) => {
     await pool.query("DELETE FROM text_comment WHERE id = $1", [commentId]);
 };
 
-const getCommentsByPostId = async (postId) => {
+const getCommentsByPostId = async (postId, userId) => {
     const results = await (
         await pool.query(
             "SELECT text_comment.id, text_comment.post_id, text_comment.parent_comment_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE text_comment.post_id = $1 AND text_comment.parent_comment_id IS NULL ORDER BY text_comment.created_at DESC",
@@ -236,8 +236,10 @@ const getCommentsByPostId = async (postId) => {
         const commentId = result.id;
         const likeCnt = await getCommentLikeCnt(commentId);
         const commentCnt = await getCommentCommentCnt(commentId);
+        const isLiked = await commentIsLiked(commentId, userId);
         result.like_cnt = likeCnt;
         result.comment_cnt = commentCnt;
+        result.is_liked = isLiked;
     }
     console.log(results);
 
@@ -254,7 +256,7 @@ const getCommentByCommentId = async (commentId) => {
     return result;
 };
 
-const getCommentsByParentCommentId = async (commentId) => {
+const getCommentsByParentCommentId = async (commentId, userId) => {
     const results = await (
         await pool.query(
             "SELECT text_comment.id, text_comment.post_id, text_comment.parent_comment_id, text_comment.written_text, text_comment.is_pinned, text_comment.is_sensative, text_comment.is_anonymous, text_comment.created_at, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_comment LEFT JOIN user_profile AS profile ON text_comment.user_id = profile.id WHERE text_comment.parent_comment_id = $1 ORDER BY text_comment.created_at DESC",
@@ -266,8 +268,10 @@ const getCommentsByParentCommentId = async (commentId) => {
         const commentId = result.id;
         const likeCnt = await getCommentLikeCnt(commentId);
         const commentCnt = await getCommentCommentCnt(commentId);
+        const isLiked = await commentIsLiked(commentId, userId);
         result.like_cnt = likeCnt;
         result.comment_cnt = commentCnt;
+        result.is_liked = isLiked;
     }
     console.log(results);
 
@@ -293,6 +297,21 @@ const getCommentCommentCnt = async (commentId) => {
     ).rows[0];
     return result.comment_cnt;
 }
+
+const commentIsLiked = async (commentId, userId) => {
+    const results = await (
+        await pool.query(
+            "SELECT * FROM comment_like WHERE user_id = $1 AND comment_id = $2",
+            [userId, commentId]
+        )
+    ).rows[0];
+    console.log(results);
+    if (results) {
+        return true;
+    } else {
+        return false;
+    }
+};
 
 const likeComment = async (userId, commentId) => {
     await pool.query(

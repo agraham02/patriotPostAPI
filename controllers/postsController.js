@@ -152,8 +152,9 @@ const deleteCommentById = async (req, res, next) => {
 const getCommentsByPostId = async (req, res, next) => {
     try {
         const { postId } = req.params;
+        const user = await req.user;
         const results = await queries.posts.comments.getCommentsByPostId(
-            postId
+            postId, user.id
         );
         res.json(results);
     } catch (error) {
@@ -165,12 +166,13 @@ const getCommentsByPostId = async (req, res, next) => {
 const getCommentByCommentId = async (req, res, next) => {
     try {
         const { commentId } = req.params;
+        const user = await req.user;
         const getChildComments = req.query.getChildComments;
         let results;
         if (getChildComments) {
             console.log("Here");
             results = await queries.posts.comments.getCommentsByParentCommentId(
-                commentId
+                commentId, user.id
             );
         } else {
             console.log("THere");
