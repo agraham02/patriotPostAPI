@@ -7,10 +7,9 @@ postsRouter.use(passport.authenticate("jwt", { session: false }));
 
 postsRouter.get("/", postController.getPosts);
 
+postsRouter.post("/", postController.insertNewPost);
 
 postsRouter.get("/tags", postController.getTags);
-
-postsRouter.post("/", postController.insertNewPost);
 
 postsRouter.get("/:postId", postController.getPostsById);
 
