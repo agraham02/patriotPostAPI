@@ -2,7 +2,8 @@ const queries = require("../models/queries");
 
 const getPosts = async (req, res, next) => {
     try {
-        const results = await queries.posts.getPosts();
+        const user = await req.user;
+        const results = await queries.posts.getPosts(user.id);
         res.json(results);
     } catch (error) {
         res.status(500);

@@ -92,7 +92,7 @@ const insertNewPost = async (
     );
 };
 
-const getPosts = async () => {
+const getPosts = async (userId) => {
     const results = await (
         await pool.query(
             "SELECT posts.id, posts.written_text, posts.tag_1, posts.tag_2, posts.tag_3, posts.is_pinned, posts.is_advertised, posts.is_sensative, posts.is_anonymous, posts.created_at, posts.expires_in, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id ORDER BY posts.created_at DESC"
@@ -104,8 +104,10 @@ const getPosts = async () => {
         const postId = result.id;
         const likeCnt = await getPostsLikesCnt(postId);
         const commentCnt = await getPostsCommentCnt(postId);
+        const isLiked = await postIsLiked(postId, userId);
         result.like_cnt = likeCnt;
         result.comment_cnt = commentCnt;
+        result.is_liked = isLiked;
     }
     console.log(results);
     return results;
@@ -130,6 +132,15 @@ const getPostsCommentCnt = async (postId) => {
     ).rows[0];
     return results.comment_cnt;
 };
+
+const postIsLiked = async (postId, userId) => {
+    const results = await (await pool.query("SELECT * FROM post_like WHERE user_id = $1 AND post_id = $2", [userId, postId])).rows[0];
+    if (results.user_id && results.post_id) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 const getPostsById = async (postId) => {
     const post = await (
