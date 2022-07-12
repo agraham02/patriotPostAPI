@@ -135,7 +135,8 @@ const getPostsCommentCnt = async (postId) => {
 
 const postIsLiked = async (postId, userId) => {
     const results = await (await pool.query("SELECT * FROM post_like WHERE user_id = $1 AND post_id = $2", [userId, postId])).rows[0];
-    if (results.user_id && results.post_id) {
+    console.log(results);
+    if (results) {
         return true;
     } else {
         return false;
