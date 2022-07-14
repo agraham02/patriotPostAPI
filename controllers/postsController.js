@@ -256,14 +256,3 @@ module.exports = {
     unlikeComment,
     refreshPostLikesAndCommentsCnt,
 };
-
-/*-getPosts,
-        -getPostsById,
-        -getPostByUserId,
-        -insertNewPost,
-        -deletePostById,
-        -getTags,
-        -likePost,
-        -unlikePost,
-        -getLikesByPostId,
-        getLikesByUserId */

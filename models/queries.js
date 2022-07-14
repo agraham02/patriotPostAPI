@@ -99,9 +99,25 @@ const getPosts = async (userId) => {
         )
     ).rows;
 
-    for (const result of results) {
-        console.log(result);
-        const postId = result.id;
+    // for (const result of results) {
+    //     console.log(result);
+    //     const postId = result.id;
+    //     const likeCnt = await getPostsLikesCnt(postId);
+    //     const commentCnt = await getPostsCommentCnt(postId);
+    //     const isLiked = await postIsLiked(postId, userId);
+    //     result.like_cnt = likeCnt;
+    //     result.comment_cnt = commentCnt;
+    //     result.is_liked = isLiked;
+    // }
+    setPostData(results, userId);
+    console.log(results);
+    return results;
+};
+
+const setPostData = async (posts, userId) => {
+    for (const post of posts) {
+        console.log(post);
+        const postId = post.id;
         const likeCnt = await getPostsLikesCnt(postId);
         const commentCnt = await getPostsCommentCnt(postId);
         const isLiked = await postIsLiked(postId, userId);
@@ -109,8 +125,6 @@ const getPosts = async (userId) => {
         result.comment_cnt = commentCnt;
         result.is_liked = isLiked;
     }
-    console.log(results);
-    return results;
 };
 
 const getPostsLikesCnt = async (postId) => {
@@ -134,14 +148,19 @@ const getPostsCommentCnt = async (postId) => {
 };
 
 const postIsLiked = async (postId, userId) => {
-    const results = await (await pool.query("SELECT * FROM post_like WHERE user_id = $1 AND post_id = $2", [userId, postId])).rows[0];
+    const results = await (
+        await pool.query(
+            "SELECT * FROM post_like WHERE user_id = $1 AND post_id = $2",
+            [userId, postId]
+        )
+    ).rows[0];
     console.log(results);
     if (results) {
         return true;
     } else {
         return false;
     }
-}
+};
 
 const getPostsById = async (postId) => {
     const post = await (
@@ -161,6 +180,7 @@ const getPostByUserId = async (userId) => {
             [userId]
         )
     ).rows;
+    setPostData(results, userId);
     return results;
 };
 
@@ -299,7 +319,7 @@ const getCommentCommentCnt = async (commentId) => {
         )
     ).rows[0];
     return result.comment_cnt;
-}
+};
 
 const commentIsLiked = async (commentId, userId) => {
     const results = await (
@@ -331,12 +351,14 @@ const unlikeComment = async (userId, commentId) => {
 };
 
 const getCommentLikesByUserId = async (userId) => {
-  const results = await (
-        await pool.query("SELECT * FROM comment_like WHERE user_id = $1", [userId])
+    const results = await (
+        await pool.query("SELECT * FROM comment_like WHERE user_id = $1", [
+            userId,
+        ])
     ).rows;
     console.log(results);
     return results;
-}
+};
 
 const getTags = async () => {
     const results = await (
@@ -378,7 +400,7 @@ module.exports = {
             getCommentLikeCnt,
             likeComment,
             unlikeComment,
-            getCommentLikesByUserId
+            getCommentLikesByUserId,
         },
     },
     logIn: {},
