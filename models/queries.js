@@ -53,7 +53,7 @@ const updateUserById = async (
 ) => {};
 
 const updateUserBio = async (text, userId) => {
-    await pool.query("UPDATE user_profile SET bio = $1 WHERE id = $1", [text, userId]);
+    await pool.query("UPDATE user_profile SET bio = $1 WHERE id = $2", [text, userId]);
 }
 
 const updateUserSettingsByUserId = async (
