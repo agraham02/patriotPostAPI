@@ -57,10 +57,18 @@ const getCommentLikesByUserId = async (req, res, next) => {
   res.json(results);
 }
 
+const updateBio = async (req, res, next) => {
+  const user = await req.user;
+  const {text} = req.body;
+  await queries.users.updateUserBio(text, user.id);
+  res.json("Successfully updated your bio");
+}
+
 module.exports = {
   getProfileByUsername,
   getProfileDataById,
   deleteProfileById,
   getLikesByUserId,
-  getCommentLikesByUserId
+  getCommentLikesByUserId,
+  updateBio
 };

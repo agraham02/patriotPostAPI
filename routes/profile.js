@@ -26,6 +26,8 @@ profileRouter.get("/comments/myLikes", userProfileController.getCommentLikesByUs
 
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
 
+profileRouter.patch("/bio", userProfileController.updateBio);
+
 
 //need to log user out then delete user
 profileRouter.delete("/", userProfileController.deleteProfileById);
