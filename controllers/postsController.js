@@ -251,6 +251,7 @@ module.exports = {
     deleteCommentById,
     getCommentsByPostId,
     getCommentByCommentId,
+    getMyPosts,
     getTags,
     likeComment,
     unlikeComment,

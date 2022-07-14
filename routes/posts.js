@@ -11,6 +11,8 @@ postsRouter.post("/", postController.insertNewPost);
 
 postsRouter.get("/tags", postController.getTags);
 
+postsRouter.get("/myPosts", postController.getPostByUserId);
+
 postsRouter.get("/:postId", postController.getPostsById);
 
 postsRouter.delete("/:postId", postController.deletePostById);
