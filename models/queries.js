@@ -121,9 +121,9 @@ const setPostData = async (posts, userId) => {
         const likeCnt = await getPostsLikesCnt(postId);
         const commentCnt = await getPostsCommentCnt(postId);
         const isLiked = await postIsLiked(postId, userId);
-        result.like_cnt = likeCnt;
-        result.comment_cnt = commentCnt;
-        result.is_liked = isLiked;
+        post.like_cnt = likeCnt;
+        post.comment_cnt = commentCnt;
+        post.is_liked = isLiked;
     }
 };
 
