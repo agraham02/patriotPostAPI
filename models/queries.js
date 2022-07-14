@@ -109,7 +109,7 @@ const getPosts = async (userId) => {
     //     result.comment_cnt = commentCnt;
     //     result.is_liked = isLiked;
     // }
-    setPostData(results, userId);
+    await setPostData(results, userId);
     console.log(results);
     return results;
 };
@@ -180,7 +180,7 @@ const getPostByUserId = async (userId) => {
             [userId]
         )
     ).rows;
-    setPostData(results, userId);
+    await setPostData(results, userId);
     return results;
 };
 
