@@ -56,6 +56,21 @@ const updateUserBio = async (text, userId) => {
     await pool.query("UPDATE user_profile SET bio = $1 WHERE id = $2", [text, userId]);
 }
 
+const updateName = async (firstName, lastName, userId) => {
+    await pool.query("UPDATE user_profile SET first_name = $1, last_name = $2 WHERE id = $2", [
+        firstName,
+        lastName,
+        userId,
+    ]);
+};
+
+const updateUsername = async (username, userId) => {
+    await pool.query(
+        "UPDATE user_profile SET username = $1, WHERE id = $2",
+        [username, userId]
+    );
+};
+
 const updateUserSettingsByUserId = async (
     showAge,
     showGradYear,
@@ -378,6 +393,8 @@ module.exports = {
         insertNewUser,
         updateUserById,
         updateUserBio,
+        updateName,
+        updateUsername,
         deleteUserById,
         updateUserSettingsByUserId,
     },

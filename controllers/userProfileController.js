@@ -64,11 +64,31 @@ const updateBio = async (req, res, next) => {
   res.json("Successfully updated your bio");
 }
 
+const updateName = async (req, res, next) => {
+  const user = await req.user;
+  const {firstName, lastName } = req.body;
+  await queries.users.updateName(firstName, lastName, user.id);
+  res.json("Successfully updated your name");
+}
+
+const updateUsername = async (req, res, next) => {
+    const user = await req.user;
+    const { username } = req.body;
+    const userWithThatName = await queries.users.getUserByUsername(username);
+    if (userWithThatName) {
+      return res.json("A user with that username already exists.");
+    }
+    await queries.users.updateUsername(username, user.id);
+    res.json("Successfully updated your username");
+};
+
 module.exports = {
   getProfileByUsername,
   getProfileDataById,
   deleteProfileById,
   getLikesByUserId,
   getCommentLikesByUserId,
-  updateBio
+  updateBio,
+  updateName,
+  updateUsername
 };
