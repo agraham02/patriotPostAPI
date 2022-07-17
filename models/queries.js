@@ -71,6 +71,13 @@ const updateUsername = async (username, userId) => {
     );
 };
 
+const updateSocialMedias = async (socialMedias, userId) => {
+    await pool.query(
+        "UPDATE user_profile SET social_medias = $1 WHERE id = $2",
+        [socialMedias, userId]
+    );
+};
+
 const updateUserSettingsByUserId = async (
     showAge,
     showGradYear,
@@ -395,6 +402,7 @@ module.exports = {
         updateUserBio,
         updateName,
         updateUsername,
+        updateSocialMedias,
         deleteUserById,
         updateUserSettingsByUserId,
     },
