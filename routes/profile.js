@@ -32,7 +32,6 @@ profileRouter.patch("/name", userProfileController.updateName);
 
 profileRouter.patch("/username", userProfileController.updateUsername);
 
-
 //need to log user out then delete user
 profileRouter.delete("/", userProfileController.deleteProfileById);
 
