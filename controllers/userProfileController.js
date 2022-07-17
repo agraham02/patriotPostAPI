@@ -113,14 +113,14 @@ const updateSocialMedias = async (req, res, next) => {
             website,
         } = req.body;
         const socialMedias = {
-            instagram: instagram.trim() || null,
-            snapchat: snapchat.trim() || null,
-            facebook: facebook.trim() || null,
-            linkedin: linkedin.trim() || null,
-            twitter: twitter.trim() || null,
-            discord: discord.trim() || null,
-            email: email.trim() || null,
-            website: website.trim() || null,
+            instagram,
+            snapchat,
+            facebook,
+            linkedin,
+            twitter,
+            discord,
+            email,
+            website,
         };
         await queries.users.updateSocialMedias(socialMedias, user.id);
         res.json("Successfully updated your social medias");
