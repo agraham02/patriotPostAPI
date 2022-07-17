@@ -66,7 +66,7 @@ const updateName = async (firstName, lastName, userId) => {
 
 const updateUsername = async (username, userId) => {
     await pool.query(
-        "UPDATE user_profile SET username = $1, WHERE id = $2",
+        "UPDATE user_profile SET username = $1 WHERE id = $2",
         [username, userId]
     );
 };
