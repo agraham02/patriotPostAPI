@@ -28,7 +28,7 @@ const logIn = async (req, res, next) => {
   //   console.log(dbUser);
 
   if (!dbUser) {
-    return res.json("User not found");
+    return res.status(401).json("User not found");
   }
 
   const rightPassword = await comparePasswords(
@@ -39,13 +39,13 @@ const logIn = async (req, res, next) => {
     const accessToken = issueJWT(dbUser);
     res.json({ dbUser, accessToken });
   } else {
-    return res.json("Password is incorrect");
+    return res.status(401).json("Password is incorrect");
   }
 };
 
 const register = async (req, res, next) => {
   console.log("Hello");
-  const { firstName, lastName, username, email, password } = req.body;
+  const { firstName, lastName, username, email, password } = req.body; //birthdate
   const birthDate = new Date("May 11, 2002");
   try {
     //check if user with given username already exists
