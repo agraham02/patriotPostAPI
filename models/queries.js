@@ -57,7 +57,7 @@ const updateUserBio = async (text, userId) => {
 }
 
 const updateName = async (firstName, lastName, userId) => {
-    await pool.query("UPDATE user_profile SET first_name = $1, last_name = $2 WHERE id = $2", [
+    await pool.query("UPDATE user_profile SET first_name = $1, last_name = $2 WHERE id = $3", [
         firstName,
         lastName,
         userId,
