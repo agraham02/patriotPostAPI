@@ -53,22 +53,24 @@ const updateUserById = async (
 ) => {};
 
 const updateUserBio = async (text, userId) => {
-    await pool.query("UPDATE user_profile SET bio = $1 WHERE id = $2", [text, userId]);
-}
-
-const updateName = async (firstName, lastName, userId) => {
-    await pool.query("UPDATE user_profile SET first_name = $1, last_name = $2 WHERE id = $3", [
-        firstName,
-        lastName,
+    await pool.query("UPDATE user_profile SET bio = $1 WHERE id = $2", [
+        text,
         userId,
     ]);
 };
 
-const updateUsername = async (username, userId) => {
+const updateName = async (firstName, lastName, userId) => {
     await pool.query(
-        "UPDATE user_profile SET username = $1 WHERE id = $2",
-        [username, userId]
+        "UPDATE user_profile SET first_name = $1, last_name = $2 WHERE id = $3",
+        [firstName, lastName, userId]
     );
+};
+
+const updateUsername = async (username, userId) => {
+    await pool.query("UPDATE user_profile SET username = $1 WHERE id = $2", [
+        username,
+        userId,
+    ]);
 };
 
 const updateSocialMedias = async (socialMedias, userId) => {
@@ -146,10 +148,12 @@ const setPostData = async (posts, userId) => {
         const postId = post.id;
         const likeCnt = await getPostsLikesCnt(postId);
         const commentCnt = await getPostsCommentCnt(postId);
-        const isLiked = await postIsLiked(postId, userId);
+        const isLiked = await getPostIsLiked(postId, userId);
+        const tags = await getPostTags(post);
         post.like_cnt = likeCnt;
         post.comment_cnt = commentCnt;
         post.is_liked = isLiked;
+        post.tags = tags;
     }
 };
 
@@ -173,7 +177,7 @@ const getPostsCommentCnt = async (postId) => {
     return results.comment_cnt;
 };
 
-const postIsLiked = async (postId, userId) => {
+const getPostIsLiked = async (postId, userId) => {
     const results = await (
         await pool.query(
             "SELECT * FROM post_like WHERE user_id = $1 AND post_id = $2",
@@ -186,6 +190,30 @@ const postIsLiked = async (postId, userId) => {
     } else {
         return false;
     }
+};
+
+const getPostTags = async (post) => {
+    const tag1 = post.tag_1
+        ? await (await pool.query("SELECT name, color FROM post_tag WHERE id = $1", [post.tag_1])).rows[0]
+        : null;
+    const tag2 = post.tag_2
+        ? await (
+              await pool.query(
+                  "SELECT name, color FROM post_tag WHERE id = $1",
+                  [post.tag_2]
+              )
+          ).rows[0]
+        : null;
+    const tag3 = post.tag_3
+        ? await (
+              await pool.query(
+                  "SELECT name, color FROM post_tag WHERE id = $1",
+                  [post.tag_3]
+              )
+          ).rows[0]
+        : null;
+
+        return [tag1, tag2, tag3];
 };
 
 const getPostsById = async (postId) => {
