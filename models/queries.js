@@ -194,23 +194,13 @@ const getPostIsLiked = async (postId, userId) => {
 
 const getPostTags = async (post) => {
     const tag1 = post.tag_1
-        ? await (await pool.query("SELECT name, color FROM post_tag WHERE id = $1", [post.tag_1])).rows[0]
+        ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_1])).rows[0]
         : null;
     const tag2 = post.tag_2
-        ? await (
-              await pool.query(
-                  "SELECT name, color FROM post_tag WHERE id = $1",
-                  [post.tag_2]
-              )
-          ).rows[0]
+        ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_2])).rows[0]
         : null;
     const tag3 = post.tag_3
-        ? await (
-              await pool.query(
-                  "SELECT name, color FROM post_tag WHERE id = $1",
-                  [post.tag_3]
-              )
-          ).rows[0]
+        ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_3])).rows[0]
         : null;
 
         return [tag1, tag2, tag3];
