@@ -223,7 +223,7 @@ const refreshPostLikesAndCommentsCnt = async (req, res, next) => {
         res.json({
             like_cnt: likeCnt,
             comment_cnt: commentCnt,
-            isLiked
+            is_liked: isLiked
         });
     } catch (error) {
         res.status(500);
