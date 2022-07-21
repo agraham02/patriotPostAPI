@@ -213,7 +213,7 @@ const unlikeComment = async (req, res, next) => {
 
 const refreshPostLikesAndCommentsCnt = async (req, res, next) => {
     try {
-        const {user} = await req.body;
+        const user = await req.user;
         const { postId } = req.params;
         const likeCnt = await queries.posts.likes.getPostsLikesCnt(postId);
         const commentCnt = await queries.posts.comments.getPostsCommentCnt(
