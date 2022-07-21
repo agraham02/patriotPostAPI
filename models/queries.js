@@ -193,6 +193,7 @@ const getPostIsLiked = async (postId, userId) => {
 };
 
 const getPostTags = async (post) => {
+    const ans = [];
     const tag1 = post.tag_1
         ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_1])).rows[0]
         : null;
@@ -203,7 +204,18 @@ const getPostTags = async (post) => {
         ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_3])).rows[0]
         : null;
 
-        return [tag1, tag2, tag3];
+        if (tag1) {
+            ans.push(tag1);
+        }
+        if (tag2) {
+            ans.push(tag2);
+        }
+        if (tag3) {
+            ans.push(tag3);
+        }
+
+        // return [tag1, tag2, tag3];
+        return ans;
 };
 
 const getPostsById = async (postId) => {
