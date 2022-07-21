@@ -213,14 +213,17 @@ const unlikeComment = async (req, res, next) => {
 
 const refreshPostLikesAndCommentsCnt = async (req, res, next) => {
     try {
+        const {user} = req.body;
         const { postId } = req.params;
         const likeCnt = await queries.posts.likes.getPostsLikesCnt(postId);
         const commentCnt = await queries.posts.comments.getPostsCommentCnt(
             postId
         );
+        const isLiked = await queries.posts.getPostIsLiked(postId, user.id);
         res.json({
             like_cnt: likeCnt,
             comment_cnt: commentCnt,
+            isLiked
         });
     } catch (error) {
         res.status(500);
