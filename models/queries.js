@@ -443,7 +443,7 @@ module.exports = {
         insertNewPost,
         deletePostById,
         getTags,
-        getPostIsLiked
+        getPostIsLiked,
         likes: {
             likePost,
             unlikePost,
