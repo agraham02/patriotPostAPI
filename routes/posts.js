@@ -19,7 +19,7 @@ postsRouter.delete("/:postId", postController.deletePostById);
 
 postsRouter.post("/:postId/like", postController.likePost);
 
-postsRouter.post("/:postId/unlike", postController.unlikePost);
+postsRouter.delete("/:postId/unlike", postController.unlikePost);
 
 postsRouter.get("/:postId/likes", postController.getLikesByPostId);
 
