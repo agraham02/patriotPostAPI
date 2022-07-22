@@ -26,6 +26,8 @@ profileRouter.get("/comments/myLikes", userProfileController.getCommentLikesByUs
 
 profileRouter.get("/:username", userProfileController.getProfileByUsername);
 
+profileRouter.get("/:id", userProfileController.getProfileDataById);
+
 profileRouter.patch("/bio", userProfileController.updateBio);
 
 profileRouter.patch("/name", userProfileController.updateName);
