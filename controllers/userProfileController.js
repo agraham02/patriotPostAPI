@@ -9,6 +9,7 @@ const getProfileByUsername = async (req, res, next) => {
 const getProfileDataById = async (req, res, next) => {
     const { userId } = req.query;
     const results = await queries.users.getUserById(userId);
+    console.log(results);
     res.json(results);
     // if (results) {
     //     const filteredResults = {
