@@ -120,10 +120,10 @@ const insertNewPost = async (
     );
 };
 
-const getPosts = async (userId) => {
+const getPosts = async (userId, limit, startIndex) => {
     const results = await (
         await pool.query(
-            "SELECT posts.id, posts.written_text, posts.tag_1, posts.tag_2, posts.tag_3, posts.is_pinned, posts.is_advertised, posts.is_sensative, posts.is_anonymous, posts.created_at, posts.expires_in, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id ORDER BY posts.created_at DESC"
+            "SELECT posts.id, posts.written_text, posts.tag_1, posts.tag_2, posts.tag_3, posts.is_pinned, posts.is_advertised, posts.is_sensative, posts.is_anonymous, posts.created_at, posts.expires_in, profile.id AS user_id, profile.first_name, profile.last_name, profile.username, profile.profile_pic FROM text_post AS posts LEFT JOIN user_profile AS profile ON posts.user_id = profile.id ORDER BY posts.created_at DESC LIMIT $1 OFFSET $2", [limit, startIndex]
         )
     ).rows;
 
@@ -138,7 +138,7 @@ const getPosts = async (userId) => {
     //     result.is_liked = isLiked;
     // }
     await setPostData(results, userId);
-    console.log(results);
+    // console.log(results);
     return results;
 };
 
@@ -184,7 +184,7 @@ const getPostIsLiked = async (postId, userId) => {
             [userId, postId]
         )
     ).rows[0];
-    console.log(results);
+    // console.log(results);
     if (results) {
         return true;
     } else {
@@ -195,27 +195,39 @@ const getPostIsLiked = async (postId, userId) => {
 const getPostTags = async (post) => {
     const ans = [];
     const tag1 = post.tag_1
-        ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_1])).rows[0]
+        ? await (
+              await pool.query("SELECT * FROM post_tag WHERE id = $1", [
+                  post.tag_1,
+              ])
+          ).rows[0]
         : null;
     const tag2 = post.tag_2
-        ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_2])).rows[0]
+        ? await (
+              await pool.query("SELECT * FROM post_tag WHERE id = $1", [
+                  post.tag_2,
+              ])
+          ).rows[0]
         : null;
     const tag3 = post.tag_3
-        ? await (await pool.query("SELECT * FROM post_tag WHERE id = $1", [post.tag_3])).rows[0]
+        ? await (
+              await pool.query("SELECT * FROM post_tag WHERE id = $1", [
+                  post.tag_3,
+              ])
+          ).rows[0]
         : null;
 
-        if (tag1) {
-            ans.push(tag1);
-        }
-        if (tag2) {
-            ans.push(tag2);
-        }
-        if (tag3) {
-            ans.push(tag3);
-        }
+    if (tag1) {
+        ans.push(tag1);
+    }
+    if (tag2) {
+        ans.push(tag2);
+    }
+    if (tag3) {
+        ans.push(tag3);
+    }
 
-        // return [tag1, tag2, tag3];
-        return ans;
+    // return [tag1, tag2, tag3];
+    return ans;
 };
 
 const getPostsById = async (postId) => {
@@ -242,6 +254,12 @@ const getPostByUserId = async (userId) => {
 
 const deletePostById = async (postId) => {
     await pool.query("DELETE FROM text_post WHERE id = $1", [postId]);
+};
+
+const searchPostText = async (searchParam) => {
+    const results = await ( await pool.query("SELECT * FROM text_post WHERE written_text LIKE '%$1%'",
+        [searchParam])).rows;
+        return results;
 };
 
 //Likes
@@ -444,6 +462,7 @@ module.exports = {
         deletePostById,
         getTags,
         getPostIsLiked,
+        searchPostText,
         likes: {
             likePost,
             unlikePost,

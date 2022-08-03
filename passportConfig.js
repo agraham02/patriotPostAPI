@@ -41,7 +41,7 @@ function initializePassport(passport) {
         }
     }
     const jwtStrategy = new JwtStrategy(options, (payload, done) => {
-        console.log(" Hey: " + payload.sub);
+        // console.log(" Hey: " + payload.sub);
         try {
             const id = payload.sub;
             const user = queries.users.getUserById(id);
